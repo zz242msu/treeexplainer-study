@@ -375,7 +375,7 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 
 for i in np.argsort(-np.abs(xgb_shap).mean(0))[:20]:
     embedding_plot(shap_pca, xgb_shap[:shap_pca.shape[0],i], "SHAP value of "+str(X.columns[i]), show=False)
-    # zijian this pdf url is off. 
+    # zijian this pdf url is off. this will show figures in a loop
     # todo move savefig into embedding_plot function
     #pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/kidney_shap_pca_risk.pdf", dpi=400)
     #pl.show()
@@ -398,9 +398,7 @@ obj[:1,:]
 
 
 
-
 from scipy.spatial.distance import pdist
-
 
 
 
@@ -418,7 +416,7 @@ def hclust_order(X, metric="sqeuclidean"):
         s1 = sets[int(cluster_matrix[i,0])]
         s2 = sets[int(cluster_matrix[i,1])]
 
-        # Zi. Move s1, s2 to here.
+        # zijian. Move s1, s2 to here.
         pdist(np.vstack([xgb_shap[s1[-1],:], xgb_shap[s2[0],:]]), "sqeuclidean")[0]
         scipy.spatial.distance.pdist(xgb_shap, "sqeuclidean")
         np.sum((xgb_shap[s1[-1],:] - xgb_shap[s2[0],:])**2)
@@ -497,7 +495,8 @@ ax.spines['right'].set_visible(False)
 ax.spines['left'].set_visible(False)
 ax.spines['top'].set_visible(False)
 ax.spines['bottom'].set_visible(False)
-pl.show()
+pl.savefig("raw_figures/nhanes_heatmap_pre.pdf", dpi=400)
+# pl.show()
 
 
 # zijian todo restart from here!
