@@ -185,7 +185,6 @@ pl.semilogx(penalties, cstats)
 pl.xlabel("L2 penalty")
 pl.ylabel("C-statistic")
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_best_penalty.pdf", dpi=400)
-
 # pl.show()
 
 
@@ -214,10 +213,10 @@ shap.dependence_plot(("Age", "Sex"), xgb_shap_interaction, X, feature_names=np.a
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_age_sex_interaction.pdf", dpi=400)
 #pl.show()
 
-
-shap.dependence_plot(("Age", "Sex"), xgb_shap_interaction, X, feature_names=np.array(mapped_feature_names), show=False)
-pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_age_sex_interaction.pdf", dpi=400)
-#pl.show()
+# remove duplicated plot
+# shap.dependence_plot(("Age", "Sex"), xgb_shap_interaction, X, feature_names=np.array(mapped_feature_names), show=False)
+# pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_age_sex_interaction.pdf", dpi=400)
+# #pl.show()
 
 
 
@@ -226,7 +225,7 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 #pl.show()
 
 
-
+# color is different from the original one
 shap.dependence_plot(
     ("Systolic blood pressure", "Systolic blood pressure"),
     xgb_shap_interaction, X,
@@ -234,8 +233,11 @@ shap.dependence_plot(
     show=False,
     color=shap.plots.colors.blue_rgb
 )
-pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_sbp_main_effect.pdf", dpi=400)
+
+# zijian moved this above
 pl.ylim(-0.2, 0.8)
+pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_sbp_main_effect.pdf", dpi=400)
+
 #pl.show()
 
 
