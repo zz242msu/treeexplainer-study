@@ -5,8 +5,8 @@ import sklearn.model_selection
 
 #fixme set relative urls 
 
-def _load(biochemtapepath="/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/data/DU4800.txt", medexamtapepath='/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/data/DU4233.txt', 
-         anthropometrypath="/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/data/DU4111.txt", vitlpath="/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/data/N92vitl.txt"):
+def _load(biochemtapepath="/home/zz242/treeexplainer-study/notebooks/mortality/data/DU4800.txt", medexamtapepath='/home/zz242/treeexplainer-study/notebooks/mortality/data/DU4233.txt', 
+         anthropometrypath="/home/zz242/treeexplainer-study/notebooks/mortality/data/DU4111.txt", vitlpath="/home/zz242/treeexplainer-study/notebooks/mortality/data/N92vitl.txt"):
     '''
     Load NHANES I biochemistry tape and mortality data.
 
