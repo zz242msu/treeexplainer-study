@@ -584,7 +584,8 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 for i in np.argsort(-np.abs(xgb_shap).mean(0))[:20]:
     shap.dependence_plot(i, xgb_shap, X, feature_names=mapped_feature_names, show=False)
     #pl.xlim(np.nanpercentile(X.values[:,i].astype(np.float64), 1), np.nanpercentile(X.values[:,i].astype(np.float64), 99))
-    pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/kidney_dependence_"+X.columns[i]+".pdf", dpi=400)
+    # zijian save figm not show
+    pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_dependence_"+X.columns[i]+".pdf", dpi=400)
     #pl.show()
     
 
