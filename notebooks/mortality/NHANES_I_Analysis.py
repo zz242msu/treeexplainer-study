@@ -241,8 +241,6 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 #pl.show()
 
 
-
-
 ind1 = np.where(np.array(mapped_feature_names) == "Age")[0][0]
 ind2 = np.where(np.array(mapped_feature_names) == "Systolic blood pressure")[0][0]
 shap.dependence_plot(
@@ -257,8 +255,6 @@ pl.gcf().set_size_inches(6, 5)
 pl.ylim(-0.25019020676623821, 0.96597250640403265)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_sbp_main_effect.pdf", dpi=400)
 #pl.show()
-
-
 
 
 
@@ -287,8 +283,6 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 # ## Build embedding plots
 
 
-
-
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 
@@ -298,25 +292,14 @@ np.random.seed(0)
 shap_pca = PCA(n_components=2).fit_transform(xgb_shap)
 raw_pca = PCA(n_components=2).fit_transform(X_imp)
 
-
-
-
+# zijian define variables before using them.
 X_f = X.iloc[X["sex_isFemale"].values,:]
 xgb_shap_f = xgb_shap[X["sex_isFemale"].values,:]
 X_m = X.iloc[np.invert(X["sex_isFemale"].values),:]
 xgb_shap_m = xgb_shap[np.invert(X["sex_isFemale"].values),:]
 
-
-
-
 shap_pca_f = PCA(n_components=2).fit_transform(xgb_shap_f)
-
-
-
-
 shap_pca_m = PCA(n_components=2).fit_transform(xgb_shap_m)
-
-
 
 tmp = PCA(n_components=50).fit_transform(xgb_shap_f)
 shap_tsne_f = TSNE(
@@ -358,17 +341,15 @@ def embedding_plot(embedding, values, label, alpha=1.0, show=True):
     cb.ax.tick_params('x', length=0)
     cb.ax.xaxis.set_label_position('top')
     pl.gca().axis("off")
-    if show:
-        pl.show()
+    # fixme zijian add this back if needed
+    print('commentted out if show: pl.show()')
+    # if show:
+    #     pl.show()
     
-
 
 embedding_plot(shap_pca, xgb_shap.sum(1), "Log hazard ratio of mortality", show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_shap_pca_risk.pdf", dpi=400)
 #pl.show()
-
-
-
 
 
 ind = np.where(X.columns == "age")[0][0]
@@ -377,15 +358,10 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 #pl.show()
 
 
-
-
-
 ind = np.where(X.columns == "sex_isFemale")[0][0]
 embedding_plot(shap_pca, xgb_shap[:,ind], "SHAP value of "+str(mapped_feature_names[ind]), show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_shap_pca_sex.pdf", dpi=400)
 #pl.show()
-
-
 
 
 
@@ -399,10 +375,11 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 
 for i in np.argsort(-np.abs(xgb_shap).mean(0))[:20]:
     embedding_plot(shap_pca, xgb_shap[:shap_pca.shape[0],i], "SHAP value of "+str(X.columns[i]), show=False)
-    pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/kidney_shap_pca_risk.pdf", dpi=400)
+    # zijian this pdf url is off. 
+    # todo move savefig into embedding_plot function
+    #pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/kidney_shap_pca_risk.pdf", dpi=400)
     #pl.show()
     
-
 
 
 import scipy
@@ -411,16 +388,10 @@ D = scipy.spatial.distance.pdist(xgb_shap, 'sqeuclidean')
 clustOrder = scipy.cluster.hierarchy.leaves_list(scipy.cluster.hierarchy.complete(D))
 
 
-
-
 obj = scipy.cluster.hierarchy.complete(D)
 
 
-
-
 obj.shape
-
-
 
 
 obj[:1,:]
@@ -529,7 +500,7 @@ ax.spines['bottom'].set_visible(False)
 pl.show()
 
 
-
+# zijian todo restart from here!
 
 clustOrder = hclust_order(xgb_shap)
 
