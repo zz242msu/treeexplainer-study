@@ -409,6 +409,8 @@ def hclust_order(X, metric="sqeuclidean"):
     # compute a hierarchical clustering
     D = scipy.spatial.distance.pdist(X, metric)
     cluster_matrix = scipy.cluster.hierarchy.complete(D)
+    print('total loops')
+    print(cluster_matrix.shape[0])
     
     # merge clusters, rotating them to make the end points match as best we can
     sets = [[i] for i in range(X.shape[0])]
