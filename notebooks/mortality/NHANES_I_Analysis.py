@@ -412,7 +412,10 @@ def hclust_order(X, metric="sqeuclidean"):
     
     # merge clusters, rotating them to make the end points match as best we can
     sets = [[i] for i in range(X.shape[0])]
+    print(sets)
     for i in range(cluster_matrix.shape[0]):
+        print('in for loop')
+        print(i)
         s1 = sets[int(cluster_matrix[i,0])]
         s2 = sets[int(cluster_matrix[i,1])]
 
@@ -500,15 +503,23 @@ pl.savefig("raw_figures/nhanes_heatmap_pre.pdf", dpi=400)
 
 
 # zijian todo restart from here!
-
+print('clustOrder')
 clustOrder = hclust_order(xgb_shap)
+print(clustOrder)
 
+print('col_inds')
 col_inds = np.argsort(-np.abs(xgb_shap).mean(0))[:10]
+print(col_inds)
 
+print('xgb_shap_normed')
 xgb_shap_normed = xgb_shap.copy()
+print(xgb_shap_normed)
+
 for i in col_inds:
     xgb_shap_normed[:,i] -= xgb_shap_normed[:,i].min()
     xgb_shap_normed[:,i] /= xgb_shap_normed[:,i].max()
+
+print(xgb_shap_normed)
     
 f = pl.figure(figsize=(15,4))
 total = xgb_shap[clustOrder,:].sum(1)
