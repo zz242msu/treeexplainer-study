@@ -181,10 +181,12 @@ for penalty in tqdm(penalties):
 print("Best penalty:", penalties[np.argmax(cstats)])
 
 
-#pl.semilogx(penalties, cstats)
-#pl.xlabel("L2 penalty")
-#pl.ylabel("C-statistic")
-#pl.show()
+pl.semilogx(penalties, cstats)
+pl.xlabel("L2 penalty")
+pl.ylabel("C-statistic")
+pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_best_penalty.pdf", dpi=400)
+
+# pl.show()
 
 
 np.cph = lifelines.CoxPHFitter(penalizer=penalties[np.argmax(cstats)])
@@ -210,21 +212,19 @@ xgb_shap_interaction.shape
 
 shap.dependence_plot(("Age", "Sex"), xgb_shap_interaction, X, feature_names=np.array(mapped_feature_names), show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_age_sex_interaction.pdf", dpi=400)
-pl.show()
-#pl.clf()
-
+#pl.show()
 
 
 shap.dependence_plot(("Age", "Sex"), xgb_shap_interaction, X, feature_names=np.array(mapped_feature_names), show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_age_sex_interaction.pdf", dpi=400)
-pl.show()
+#pl.show()
 
 
 
 shap.dependence_plot(("Systolic blood pressure", "Age"), xgb_shap_interaction, X, feature_names=np.array(mapped_feature_names), show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_sbp_age_interaction.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 shap.dependence_plot(
@@ -236,8 +236,8 @@ shap.dependence_plot(
 )
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_sbp_main_effect.pdf", dpi=400)
 pl.ylim(-0.2, 0.8)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 
@@ -254,8 +254,8 @@ shap.dependence_plot(
 pl.gcf().set_size_inches(6, 5)
 pl.ylim(-0.25019020676623821, 0.96597250640403265)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_sbp_main_effect.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 
@@ -267,8 +267,8 @@ shap.summary_plot(
 )
 pl.xlabel("mean(|SHAP value|)")
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_summary_bar.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 
@@ -279,8 +279,8 @@ shap.summary_plot(
     max_display=15, auto_size_plot=False, show=False
 )
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_summary_dot.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 # ## Build embedding plots
 
@@ -358,13 +358,13 @@ def embedding_plot(embedding, values, label, alpha=1.0, show=True):
     pl.gca().axis("off")
     if show:
         pl.show()
-    #pl.clf()
+    
 
 
 embedding_plot(shap_pca, xgb_shap.sum(1), "Log hazard ratio of mortality", show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_shap_pca_risk.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 
@@ -372,8 +372,8 @@ pl.show()
 ind = np.where(X.columns == "age")[0][0]
 embedding_plot(shap_pca, xgb_shap[:,ind], "SHAP value of "+str(mapped_feature_names[ind]), show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_shap_pca_age.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 
@@ -381,7 +381,7 @@ pl.show()
 ind = np.where(X.columns == "sex_isFemale")[0][0]
 embedding_plot(shap_pca, xgb_shap[:,ind], "SHAP value of "+str(mapped_feature_names[ind]), show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_shap_pca_sex.pdf", dpi=400)
-pl.show()
+#pl.show()
 
 
 
@@ -390,18 +390,16 @@ pl.show()
 ind = np.where(X.columns == "systolic_blood_pressure")[0][0]
 embedding_plot(shap_pca, xgb_shap[:,ind], "SHAP value of "+str(mapped_feature_names[ind]), show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_shap_pca_sbp.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 
 for i in np.argsort(-np.abs(xgb_shap).mean(0))[:20]:
     embedding_plot(shap_pca, xgb_shap[:shap_pca.shape[0],i], "SHAP value of "+str(X.columns[i]), show=False)
     pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/kidney_shap_pca_risk.pdf", dpi=400)
-    pl.show()
-    #pl.clf()
-
-
+    #pl.show()
+    
 
 
 
@@ -527,7 +525,6 @@ ax.spines['left'].set_visible(False)
 ax.spines['top'].set_visible(False)
 ax.spines['bottom'].set_visible(False)
 pl.show()
-#pl.clf()
 
 
 
@@ -554,8 +551,8 @@ pl.gca().spines['top'].set_visible(False)
 pl.gca().spines['bottom'].set_visible(False)
 pl.xlabel("Individuals ordered by the leaf order of a hierarchical clustering")
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_heatmap.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 
@@ -595,8 +592,8 @@ pl.gca().spines['top'].set_visible(False)
 pl.gca().spines['bottom'].set_visible(False)
 pl.xlabel("Individuals ordered by the leaf order of a hierarchical clustering")
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_heatmap.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 # # Dependence plots
 
@@ -607,8 +604,8 @@ shap.dependence_plot(ind, xgb_shap, X, feature_names=mapped_feature_names, show=
 pl.xlim(75, 245)
 pl.ylim(-0.2,0.9)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_dependence_"+X.columns[ind]+".pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 
@@ -616,8 +613,8 @@ for i in np.argsort(-np.abs(xgb_shap).mean(0))[:20]:
     shap.dependence_plot(i, xgb_shap, X, feature_names=mapped_feature_names, show=False)
     #pl.xlim(np.nanpercentile(X.values[:,i].astype(np.float64), 1), np.nanpercentile(X.values[:,i].astype(np.float64), 99))
     pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/kidney_dependence_"+X.columns[i]+".pdf", dpi=400)
-    pl.show()
-    #pl.clf()
+    #pl.show()
+    
 
 # ## Make a Partial Dependence Plot
 
@@ -656,8 +653,8 @@ pl.xlabel("Systolic blood pressure", fontsize=13)
 pl.ylabel("Age", fontsize=13)
 pl.colorbar(label="Partial dependence")
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_pdp_sbp_age.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 
@@ -680,8 +677,8 @@ pl.gca().yaxis.set_ticks_position('left')
 pl.gca().spines['right'].set_visible(False)
 pl.gca().spines['top'].set_visible(False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_pdp_sbp.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
 
 
 
@@ -694,5 +691,5 @@ pl.gca().yaxis.set_ticks_position('left')
 pl.gca().spines['right'].set_visible(False)
 pl.gca().spines['top'].set_visible(False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_pdp_sbp.pdf", dpi=400)
-pl.show()
-#pl.clf()
+#pl.show()
+
