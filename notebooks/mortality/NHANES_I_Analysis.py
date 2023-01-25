@@ -3,11 +3,7 @@
 
 # # NHANES I Analysis
 
-# In[33]:
-
-
-# In[7]:
-
+import os
 import xgboost
 import shap
 from sklearn.model_selection import train_test_split
@@ -27,10 +23,13 @@ import lifelines
 import scipy
 
 
+# ## construct abolute urls
+# base_dir = '/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/'
+# filename = 'figures.pdf'
+# os.path.join(base_dir, filename)
+
+
 # ## Load data
-
-# In[ ]:
-
 
 X,y = loadnhanes._load()
 
@@ -111,17 +110,9 @@ X_valid_imp = scaler.transform(X_valid_imp)
 X_test_imp = scaler.transform(X_test_imp)
 X_imp = scaler.transform(X_imp)
 
-
-# In[ ]:
-
-
 X.shape
 
-
 # ## Train XGBoost
-
-# In[ ]:
-
 
 # these parameters were found using the Tune XGboost on NHANES notebook (coordinate decent)
 params = {
@@ -154,10 +145,6 @@ xgb_model.fit(
     early_stopping_rounds=10000
 )
 
-
-# In[ ]:
-
-
 def c_statistic_harrell(pred, labels):
     total = 0
     matches = 0
@@ -170,17 +157,12 @@ def c_statistic_harrell(pred, labels):
     return matches/total
 
 
-# In[ ]:
-
-
 c_statistic_harrell(xgb_model.predict(X_test), y_test)
 
 
 # ## Linear model
 
 # ### Choose L2 regularizer
-
-# In[8]:
 
 
 tmp = pd.DataFrame(X_strain_imp)
@@ -196,22 +178,13 @@ for penalty in tqdm(penalties):
     cstats.append(v)
 
 
-# In[9]:
-
-
 print("Best penalty:", penalties[np.argmax(cstats)])
-
-
-# In[10]:
 
 
 #pl.semilogx(penalties, cstats)
 #pl.xlabel("L2 penalty")
 #pl.ylabel("C-statistic")
 #pl.show()
-
-
-# In[11]:
 
 
 np.cph = lifelines.CoxPHFitter(penalizer=penalties[np.argmax(cstats)])
@@ -221,32 +194,18 @@ c_statistic_harrell(cph.predict_log_partial_hazard(X_test_imp).values, y_test)
 
 # ## Build summary plots
 
-# In[12]:
-
 
 explainer = shap.TreeExplainer(xgb_model)
 xgb_shap = explainer.shap_values(X)
 
 
-# In[13]:
-
-
 np.isnan(X.values.astype(np.float64)).sum()
-
-
-# In[14]:
 
 
 xgb_shap_interaction = shap.TreeExplainer(xgb_model).shap_interaction_values(X)
 
 
-# In[15]:
-
-
 xgb_shap_interaction.shape
-
-
-# In[16]:
 
 
 shap.dependence_plot(("Age", "Sex"), xgb_shap_interaction, X, feature_names=np.array(mapped_feature_names), show=False)
@@ -255,23 +214,17 @@ pl.show()
 #pl.clf()
 
 
-# In[17]:
-
 
 shap.dependence_plot(("Age", "Sex"), xgb_shap_interaction, X, feature_names=np.array(mapped_feature_names), show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_age_sex_interaction.pdf", dpi=400)
 pl.show()
 
-
-# In[18]:
 
 
 shap.dependence_plot(("Systolic blood pressure", "Age"), xgb_shap_interaction, X, feature_names=np.array(mapped_feature_names), show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_sbp_age_interaction.pdf", dpi=400)
 pl.show()
 #pl.clf()
-
-# In[19]:
 
 
 shap.dependence_plot(
@@ -286,7 +239,6 @@ pl.ylim(-0.2, 0.8)
 pl.show()
 #pl.clf()
 
-# In[20]:
 
 
 ind1 = np.where(np.array(mapped_feature_names) == "Age")[0][0]
@@ -305,7 +257,7 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 pl.show()
 #pl.clf()
 
-# In[21]:
+
 
 
 f = pl.figure(figsize=(4,6))
@@ -318,7 +270,7 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 pl.show()
 #pl.clf()
 
-# In[22]:
+
 
 
 f = pl.figure(figsize=(8,6))
@@ -332,7 +284,7 @@ pl.show()
 
 # ## Build embedding plots
 
-# In[23]:
+
 
 
 from sklearn.decomposition import PCA
@@ -347,26 +299,21 @@ raw_pca = PCA(n_components=2).fit_transform(X_imp)
 
 
 
-# In[26]:
-
-
 X_f = X.iloc[X["sex_isFemale"].values,:]
 xgb_shap_f = xgb_shap[X["sex_isFemale"].values,:]
 X_m = X.iloc[np.invert(X["sex_isFemale"].values),:]
 xgb_shap_m = xgb_shap[np.invert(X["sex_isFemale"].values),:]
 
-# In[24]:
+
 
 
 shap_pca_f = PCA(n_components=2).fit_transform(xgb_shap_f)
 
 
-# In[25]:
 
 
 shap_pca_m = PCA(n_components=2).fit_transform(xgb_shap_m)
 
-# In[27]:
 
 
 tmp = PCA(n_components=50).fit_transform(xgb_shap_f)
@@ -376,7 +323,6 @@ shap_tsne_f = TSNE(
 ).fit_transform(tmp[:5000,:])
 
 
-# In[28]:
 
 
 tmp = PCA(n_components=30).fit_transform(xgb_shap)
@@ -386,7 +332,6 @@ shap_tsne = TSNE(
 ).fit_transform(tmp[:1000,:])
 
 
-# In[29]:
 
 
 tmp = PCA(n_components=50).fit_transform(xgb_shap_m)
@@ -396,7 +341,6 @@ shap_tsne_m = TSNE(
 ).fit_transform(tmp[:5000,:])
 
 
-# In[30]:
 
 
 def embedding_plot(embedding, values, label, alpha=1.0, show=True):
@@ -416,13 +360,13 @@ def embedding_plot(embedding, values, label, alpha=1.0, show=True):
         pl.show()
     #pl.clf()
 
-# In[31]:
+
 embedding_plot(shap_pca, xgb_shap.sum(1), "Log hazard ratio of mortality", show=False)
 pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_figures/nhanes_shap_pca_risk.pdf", dpi=400)
 pl.show()
 #pl.clf()
 
-# In[25]:
+
 
 
 ind = np.where(X.columns == "age")[0][0]
@@ -431,7 +375,7 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 pl.show()
 #pl.clf()
 
-# In[26]:
+
 
 
 ind = np.where(X.columns == "sex_isFemale")[0][0]
@@ -440,7 +384,7 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 pl.show()
 
 
-# In[27]:
+
 
 
 ind = np.where(X.columns == "systolic_blood_pressure")[0][0]
@@ -449,7 +393,6 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 pl.show()
 #pl.clf()
 
-# In[134]:
 
 
 for i in np.argsort(-np.abs(xgb_shap).mean(0))[:20]:
@@ -459,7 +402,7 @@ for i in np.argsort(-np.abs(xgb_shap).mean(0))[:20]:
     #pl.clf()
 
 
-# In[25]:
+
 
 
 import scipy
@@ -468,35 +411,26 @@ D = scipy.spatial.distance.pdist(xgb_shap, 'sqeuclidean')
 clustOrder = scipy.cluster.hierarchy.leaves_list(scipy.cluster.hierarchy.complete(D))
 
 
-# In[61]:
 
 
 obj = scipy.cluster.hierarchy.complete(D)
 
 
-# In[62]:
 
 
 obj.shape
 
 
-# In[64]:
 
 
 obj[:1,:]
 
 
-# In[328]:
 
-# In[335]:
 
 from scipy.spatial.distance import pdist
 
 
-# In[334]:
-
-
-# In[337]:
 
 
 def hclust_order(X, metric="sqeuclidean"):
@@ -539,7 +473,6 @@ def hclust_order(X, metric="sqeuclidean"):
     return sets[-1]
 
 
-# In[12]:
 
 
 col_inds = np.argsort(-np.abs(xgb_shap).mean(0))[:10]
@@ -547,7 +480,6 @@ D = scipy.spatial.distance.pdist(xgb_shap[:,col_inds], 'sqeuclidean')
 clustOrder = scipy.cluster.hierarchy.leaves_list(scipy.cluster.hierarchy.complete(D))
 
 
-# In[307]:
 
 
 tmp = xgb_shap.copy()
@@ -556,13 +488,12 @@ D = scipy.spatial.distance.pdist(tmp.T, 'correlation')
 rowOrder = scipy.cluster.hierarchy.leaves_list(scipy.cluster.hierarchy.complete(D))
 
 
-# In[71]:
 
 
 col_inds = np.argsort(-np.abs(xgb_shap).mean(0))[:10]
 
 
-# In[15]:
+
 
 
 xgb_shap_normed = xgb_shap.copy()
@@ -571,7 +502,6 @@ for i in col_inds:
     xgb_shap_normed[:,i] /= xgb_shap_normed[:,i].max()
 
 
-# In[43]:
 
 
 import matplotlib.gridspec as gridspec
@@ -599,7 +529,7 @@ ax.spines['bottom'].set_visible(False)
 pl.show()
 #pl.clf()
 
-# In[276]:
+
 
 
 clustOrder = hclust_order(xgb_shap)
@@ -627,7 +557,6 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 pl.show()
 #pl.clf()
 
-# In[345]:
 
 
 rank_order = np.argsort(-np.abs(xgb_shap).mean(0))
@@ -637,13 +566,11 @@ rowOrder = hclust_order(tmp.T, "correlation")
 rowOrder = rank_order[rowOrder]
 
 
-# In[346]:
 
 
 clustOrder = hclust_order(xgb_shap)
 
 
-# In[347]:
 
 
 col_inds = rowOrder#np.argsort(-np.abs(xgb_shap).mean(0))[rowOrder]
@@ -673,7 +600,6 @@ pl.show()
 
 # # Dependence plots
 
-# In[40]:
 
 
 ind = np.where(X.columns == "systolic_blood_pressure")[0][0]
@@ -684,7 +610,6 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 pl.show()
 #pl.clf()
 
-# In[27]:
 
 
 for i in np.argsort(-np.abs(xgb_shap).mean(0))[:20]:
@@ -696,20 +621,20 @@ for i in np.argsort(-np.abs(xgb_shap).mean(0))[:20]:
 
 # ## Make a Partial Dependence Plot
 
-# In[122]:
+
 
 
 ind1 = np.where(X.columns == "systolic_blood_pressure")[0][0]
 ind2 = np.where(X.columns == "age")[0][0]
 
 
-# In[102]:
+
 
 
 Xtmp = X.values.copy()
 
 
-# In[126]:
+
 
 
 vals1 = np.linspace(80, 240, 20)
@@ -722,7 +647,6 @@ for i,v1 in enumerate(vals1):
         out[i,j] = xgb_model.predict(Xtmp, validate_features=False).mean()
 
 
-# In[157]:
 
 
 pl.imshow(out.T[list(reversed(np.arange(out.shape[0]))),:], cmap=shap.plots.colors.red_blue)
@@ -735,7 +659,7 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 pl.show()
 #pl.clf()
 
-# In[110]:
+
 
 
 vals = np.linspace(80, 240, 20)
@@ -745,7 +669,7 @@ for i,v in enumerate(vals):
     out[i] = xgb_model.predict(Xtmp, validate_features=False).mean()
 
 
-# In[120]:
+
 
 
 pl.plot(vals, out, color=shap.plots.colors.blue_rgb, linewidth=3)
@@ -759,7 +683,7 @@ pl.savefig("/home/yanfei/Downloads/treeexplainer-study/notebooks/mortality/raw_f
 pl.show()
 #pl.clf()
 
-# In[120]:
+
 
 
 pl.plot(vals, out, color=shap.plots.colors.blue_rgb, linewidth=3)
